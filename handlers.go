@@ -120,11 +120,30 @@ func (s *Server) handleGet(w http.ResponseWriter, r *http.Request) {
 	obj, err := s.getEntry(id)
 	if err != nil {
 		if err == ErrNotFound {
-			respondError(w, http.StatusNotFound, "Id not found.")
+			respondError(w, http.StatusNotFound, fmt.Sprintf("No entry stored at %s.", id))
 		} else {
 			respondError(w, http.StatusInternalServerError, "An unexpected error occured.")
 		}
 		return
+	}
+
+	if entryTypeQuery := r.URL.Query().Get("type"); entryTypeQuery != "" {
+		var entryType EntryType
+		switch entryTypeQuery {
+		case "game":
+			entryType = TypeGame
+		case "spectate":
+			entryType = TypeSpectate
+		case "session":
+			entryType = TypeSession
+		default:
+			respondError(w, http.StatusBadRequest, "Unknown entry type: "+entryTypeQuery)
+			return
+		}
+		if obj.Type != entryType {
+			respondError(w, http.StatusNotFound, fmt.Sprintf("No entry of type '%s' stored at %s.", entryTypeQuery, id))
+			return
+		}
 	}
 
 	if obj.Type == TypeGame {

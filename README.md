@@ -59,9 +59,11 @@ which when presented to the `/{id}` endpoint will return the session again.
 }
 ```
 
-### GET /{id}
+### GET /{id}?type=<game|spectate|session>
 
 Retrieves the data associated with the ID and returns it in a different format depending on the endpoint used to store it.
+
+You can use the optional type parameter to assert that the entry is of a specific type.
 
 IDs and their associated content are stored for 24h.
 
