@@ -4,7 +4,7 @@ A service to make sharing game IDs, spectate links and sessions easier.
 
 ## API
 
-### POST /game
+### `POST /game`
 
 #### Description
 
@@ -20,7 +20,7 @@ which when presented to the `/{id}` endpoint will return a web page with informa
 }
 ```
 
-### POST /spectate
+### `POST /spectate`
 
 #### Description
 
@@ -38,7 +38,7 @@ which when presented to the `/{id}` endpoint will redirect the user to the respe
 }
 ```
 
-### POST /session
+### `POST /session`
 
 #### Description
 
@@ -59,7 +59,7 @@ which when presented to the `/{id}` endpoint will return the session again.
 }
 ```
 
-### GET /{id}?type=<game|spectate|session>
+### `GET /{id}?type=<game|spectate|session>`
 
 Retrieves the data associated with the ID and returns it in a different format depending on the endpoint used to store it.
 
