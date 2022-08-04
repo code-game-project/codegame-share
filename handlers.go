@@ -7,6 +7,9 @@ import (
 	"io/fs"
 	"mime"
 	"net/http"
+	"regexp"
+	"strconv"
+	"strings"
 
 	"html/template"
 
@@ -184,7 +187,11 @@ func (s *Server) handleGet(w http.ResponseWriter, r *http.Request) {
 			respondError(w, http.StatusOK, err.Error())
 			return
 		}
-		http.Redirect(w, r, fmt.Sprintf("%s/spectate?game_id=%s&player_id=%s&player_secret=%s", external.BaseURL("http", external.IsTLS(spectate.GameURL), spectate.GameURL), spectate.GameId, spectate.PlayerId, spectate.PlayerSecret), http.StatusTemporaryRedirect)
+		tls := false
+		if !isLocalIP(spectate.GameURL) {
+			tls = external.IsTLS(spectate.GameURL)
+		}
+		http.Redirect(w, r, fmt.Sprintf("%s/spectate?game_id=%s&player_id=%s&player_secret=%s", external.BaseURL("http", tls, spectate.GameURL), spectate.GameId, spectate.PlayerId, spectate.PlayerSecret), http.StatusTemporaryRedirect)
 		return
 	}
 	if obj.Type == TypeSession {
@@ -209,22 +216,6 @@ func getGame(obj entry, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	api, err := server.NewAPI(game.GameURL)
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	info, err := api.FetchGameInfo()
-	if err != nil {
-		respondError(w, http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	if info.DisplayName == "" {
-		info.DisplayName = info.Name
-	}
-
 	tmpl, err := template.New("game.html").Parse(gameTemplate)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, err.Error())
@@ -241,6 +232,33 @@ func getGame(obj entry, w http.ResponseWriter, r *http.Request) {
 		Version       string
 		RepositoryURL string
 		CGVersion     string
+	}
+
+	if isLocalIP(game.GameURL) {
+		tmpl.Execute(w, gameTmplData{
+			DisplayName: game.GameURL,
+			BaseURL:     external.BaseURL("http", false, game.GameURL),
+			GameID:      game.GameId,
+			URL:         game.GameURL,
+			PlayerCount: -1,
+		})
+		return
+	}
+
+	api, err := server.NewAPI(game.GameURL)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	info, err := api.FetchGameInfo()
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if info.DisplayName == "" {
+		info.DisplayName = info.Name
 	}
 
 	players, err := api.GetPlayers(game.GameId)
@@ -263,6 +281,10 @@ func getGame(obj entry, w http.ResponseWriter, r *http.Request) {
 }
 
 func (g gameObj) validate() error {
+	if isLocalIP(g.GameURL) {
+		return nil
+	}
+
 	if !isValidGameURL(g.GameURL) {
 		return fmt.Errorf("'%s' is not a CodeGame game server!", g.GameURL)
 	}
@@ -275,6 +297,10 @@ func (g gameObj) validate() error {
 }
 
 func (g spectateObj) validate() error {
+	if isLocalIP(g.GameURL) {
+		return nil
+	}
+
 	if !isValidGameURL(g.GameURL) {
 		return fmt.Errorf("'%s' is not a CodeGame game server!", g.GameURL)
 	}
@@ -291,6 +317,10 @@ func (g spectateObj) validate() error {
 }
 
 func (g sessionObj) validate() error {
+	if isLocalIP(g.GameURL) {
+		return nil
+	}
+
 	if !isValidGameURL(g.GameURL) {
 		return fmt.Errorf("'%s' is not a CodeGame game server!", g.GameURL)
 	}
@@ -316,6 +346,25 @@ func isValidGameURL(url string) bool {
 		return false
 	}
 	return true
+}
+
+var localIpRegex = regexp.MustCompile(`(192\.168\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?)|(10\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?)`)
+
+func isLocalIP(url string) bool {
+	if strings.HasPrefix(url, "192.168.") || strings.HasPrefix(url, "10.") {
+		return localIpRegex.MatchString(url)
+	} else if strings.HasPrefix(url, "172.") {
+		parts := strings.Split(url, ".")
+		if len(parts) != 4 {
+			return false
+		}
+		second, err := strconv.Atoi(parts[1])
+		if err != nil {
+			return false
+		}
+		return second >= 16 && second <= 31
+	}
+	return false
 }
 
 func gameExists(gameURL, gameId string) bool {

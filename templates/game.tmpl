@@ -23,10 +23,12 @@
         <th>Game ID</th>
 		<td>{{.GameID}}</td>
       </tr>
+	  {{ if ge .PlayerCount 0 }}
       <tr>
         <th>Player Count</th>
 		<td>{{.PlayerCount}}</td>
       </tr>
+	  {{ end }}
 	  {{ if .Version }}
       <tr>
         <th>Game Version</td>
@@ -39,10 +41,12 @@
 		<td><a href="{{.RepositoryURL}}">{{.RepositoryURL}}</a></td>
       </tr>
       {{ end }}
+	  {{ if .CGVersion }}
       <tr>
         <th>CodeGame Version</td>
 		<td>{{.CGVersion}}</td>
       </tr>
+	 {{ end }}
     </table>
   </body>
 </html>
