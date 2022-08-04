@@ -1,20 +1,46 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"fmt"
+	"io/fs"
+	"mime"
 	"net/http"
+
+	"html/template"
 
 	"github.com/code-game-project/go-utils/external"
 	"github.com/code-game-project/go-utils/server"
 	"github.com/go-chi/chi/v5"
+
+	_ "embed"
 )
+
+//go:embed assets
+var assets embed.FS
+
+//go:embed templates/game.tmpl
+var gameTemplate string
 
 func (s *Server) registerRoutes() {
 	s.Router.Post("/game", s.handleGame)
 	s.Router.Post("/spectate", s.handleSpectate)
 	s.Router.Post("/session", s.handleSession)
 	s.Router.Get("/{id}", s.handleGet)
+
+	mime.AddExtensionType(".css", "text/css")
+	mime.AddExtensionType(".js", "text/javascript")
+
+	sub, err := fs.Sub(assets, "assets")
+	if err != nil {
+		panic(err)
+	}
+	s.Router.Handle("/assets/*", http.StripPrefix("/assets/", http.FileServer(http.FS(sub))))
+
+	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "https://github.com/code-game-project/codegame-share/blob/main/README.md", http.StatusTemporaryRedirect)
+	})
 }
 
 type idObj struct {
@@ -147,15 +173,7 @@ func (s *Server) handleGet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if obj.Type == TypeGame {
-		var game gameObj
-		json.Unmarshal(obj.Data, &game)
-		err = game.validate()
-		if err != nil {
-			respondError(w, http.StatusOK, err.Error())
-			return
-		}
-		// TODO: show frontend with copyable game ID and some other information
-		respond(w, http.StatusOK, game)
+		getGame(obj, w, r)
 		return
 	}
 	if obj.Type == TypeSpectate {
@@ -180,6 +198,68 @@ func (s *Server) handleGet(w http.ResponseWriter, r *http.Request) {
 		respond(w, http.StatusOK, session)
 		return
 	}
+}
+
+func getGame(obj entry, w http.ResponseWriter, r *http.Request) {
+	var game gameObj
+	json.Unmarshal(obj.Data, &game)
+	err := game.validate()
+	if err != nil {
+		respondError(w, http.StatusOK, err.Error())
+		return
+	}
+
+	api, err := server.NewAPI(game.GameURL)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	info, err := api.FetchGameInfo()
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if info.DisplayName == "" {
+		info.DisplayName = info.Name
+	}
+
+	tmpl, err := template.New("game.html").Parse(gameTemplate)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	type gameTmplData struct {
+		DisplayName   string
+		Description   string
+		BaseURL       string
+		GameID        string
+		URL           string
+		PlayerCount   int
+		Version       string
+		RepositoryURL string
+		CGVersion     string
+	}
+
+	players, err := api.GetPlayers(game.GameId)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	tmpl.Execute(w, gameTmplData{
+		DisplayName:   info.DisplayName,
+		Description:   info.Description,
+		BaseURL:       external.BaseURL("http", external.IsTLS(game.GameURL), game.GameURL),
+		GameID:        game.GameId,
+		URL:           game.GameURL,
+		PlayerCount:   len(players),
+		Version:       info.Version,
+		RepositoryURL: info.RepositoryURL,
+		CGVersion:     info.CGVersion,
+	})
 }
 
 func (g gameObj) validate() error {

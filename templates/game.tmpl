@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>MyGame</title>
+    <link rel="stylesheet" href="assets/style.css">
+  </head>
+  <body>
+	<h1>{{.DisplayName}}</h1>
+	<p>{{.Description}}</p>
+
+    <div>
+	  <a id="spectate-btn" href="{{.BaseURL}}/spectate?game_id={{.GameID}}">Spectate</a>
+    </div>
+
+    <table>
+      <tr>
+		<th>Game URL</td>
+		<td><a href="{{.BaseURL}}">{{.URL}}</a></td>
+      </tr>
+      <tr>
+        <th>Game ID</th>
+		<td>{{.GameID}}</td>
+      </tr>
+      <tr>
+        <th>Player Count</th>
+		<td>{{.PlayerCount}}</td>
+      </tr>
+	  {{ if .Version }}
+      <tr>
+        <th>Game Version</td>
+		<td>{{.Version}}</td>
+      </tr>
+      {{ end }}
+	  {{ if .RepositoryURL }}
+      <tr>
+        <th>Game Repository</td>
+		<td><a href="{{.RepositoryURL}}">{{.RepositoryURL}}</a></td>
+      </tr>
+      {{ end }}
+      <tr>
+        <th>CodeGame Version</td>
+		<td>{{.CGVersion}}</td>
+      </tr>
+    </table>
+  </body>
+</html>

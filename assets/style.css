@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+html {
+  background-color: #26282f;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  text-align: center;
+  height: 100vh;
+}
+
+a {
+  color: lightskyblue;
+}
+
+h1 {
+  font-size: 52px;
+  margin-top: 4vh;
+  margin-bottom: 0;
+}
+
+p {
+  margin-top: 4vh;
+  font-size: 18px;
+  margin-left: 20vw;
+  margin-right: 20vw;
+}
+
+#spectate-btn {
+  display: inline-block;
+  margin-top: 3vh;
+  color: white;
+  text-decoration: none;
+  padding: 15px 30px;
+  background-color: #2a6588;
+  border-radius: 10px;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+#spectate-btn:hover {
+  filter: brightness(1.1);
+}
+
+table {
+  text-align: left;
+  display: inline-block;
+  margin-top: 4vh;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+th {
+  background-color: #494984;
+  font-size: 15px;
+  padding: 25px 1vw;
+  width: 10vw;
+  text-align: right;
+  min-width: 160px;
+}
+
+td {
+  padding-left: 2vw;
+  width: 40vw;
+}
+
+tr {
+  background-color: #2f313a;
+}
+
+tr:nth-of-type(even) {
+    background-color: #33353f;
+}
+
+@media screen and (max-width: 1270px) {
+  th {
+    width: 15vw;
+  }
+
+  td {
+    width: 60vw;
+  }
+
+  p {
+    margin-left: 12vw;
+    margin-right: 12vw;
+  }
+}
+
+@media screen and (max-width: 980px) {
+  th {
+    width: 20vw;
+  }
+
+  td {
+    width: 70vw;
+  }
+
+  p {
+    margin-left: 5vw;
+    margin-right: 5vw;
+  }
+}
+
+@media screen and (max-width: 780px) {
+  th {
+    width: 160px;
+  }
+
+  td {
+    width: calc(100vw-160px);
+  }
+
+  p {
+    margin-left: 1vw;
+    margin-right: 1vw;
+  }
+}
