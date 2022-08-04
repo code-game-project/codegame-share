@@ -184,7 +184,7 @@ func (s *Server) handleGet(w http.ResponseWriter, r *http.Request) {
 			respondError(w, http.StatusOK, err.Error())
 			return
 		}
-		http.Redirect(w, r, fmt.Sprintf("%s/spectate?game_id=%s&player_id=%s&player_secret=%s", spectate.GameURL, spectate.GameId, spectate.PlayerId, spectate.PlayerSecret), http.StatusTemporaryRedirect)
+		http.Redirect(w, r, fmt.Sprintf("%s/spectate?game_id=%s&player_id=%s&player_secret=%s", external.BaseURL("http", external.IsTLS(spectate.GameURL), spectate.GameURL), spectate.GameId, spectate.PlayerId, spectate.PlayerSecret), http.StatusTemporaryRedirect)
 		return
 	}
 	if obj.Type == TypeSession {
