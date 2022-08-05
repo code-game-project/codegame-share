@@ -10,11 +10,15 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"html/template"
 
 	"github.com/code-game-project/go-utils/external"
 	"github.com/code-game-project/go-utils/server"
+	"github.com/didip/tollbooth/v7"
+	"github.com/didip/tollbooth/v7/limiter"
+	"github.com/didip/tollbooth_chi"
 	"github.com/go-chi/chi/v5"
 
 	_ "embed"
@@ -27,6 +31,11 @@ var assets embed.FS
 var gameTemplate string
 
 func (s *Server) registerRoutes() {
+	limiter := tollbooth.NewLimiter(1, &limiter.ExpirableOptions{
+		DefaultExpirationTTL: time.Hour,
+	}).SetIPLookups([]string{"X-Forwarded-For", "X-Real-IP", "RemoteAddr"}).SetMethods([]string{"GET", "POST"})
+	s.Router.Use(tollbooth_chi.LimitHandler(limiter))
+
 	s.Router.Post("/game", s.handleGame)
 	s.Router.Post("/spectate", s.handleSpectate)
 	s.Router.Post("/session", s.handleSession)
