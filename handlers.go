@@ -51,8 +51,9 @@ type idObj struct {
 }
 
 type gameObj struct {
-	GameURL string `json:"game_url" validate:"required"`
-	GameId  string `json:"game_id" validate:"required,uuid"`
+	GameURL    string `json:"game_url" validate:"required"`
+	GameId     string `json:"game_id" validate:"required,uuid"`
+	JoinSecret string `json:"join_secret,omitempty"`
 }
 
 func (s *Server) handleGame(w http.ResponseWriter, r *http.Request) {
@@ -227,6 +228,7 @@ func getGame(obj entry, w http.ResponseWriter, r *http.Request) {
 		Description   string
 		BaseURL       string
 		GameID        string
+		JoinSecret    string
 		URL           string
 		PlayerCount   int
 		Version       string
@@ -239,6 +241,7 @@ func getGame(obj entry, w http.ResponseWriter, r *http.Request) {
 			DisplayName: game.GameURL,
 			BaseURL:     external.BaseURL("http", false, game.GameURL),
 			GameID:      game.GameId,
+			JoinSecret:  game.JoinSecret,
 			URL:         game.GameURL,
 			PlayerCount: -1,
 		})
@@ -272,6 +275,7 @@ func getGame(obj entry, w http.ResponseWriter, r *http.Request) {
 		Description:   info.Description,
 		BaseURL:       external.BaseURL("http", external.IsTLS(game.GameURL), game.GameURL),
 		GameID:        game.GameId,
+		JoinSecret:    game.JoinSecret,
 		URL:           game.GameURL,
 		PlayerCount:   len(players),
 		Version:       info.Version,

@@ -23,6 +23,12 @@
         <th>Game ID</th>
 		<td>{{.GameID}}</td>
       </tr>
+	  {{ if .JoinSecret }}
+      <tr>
+        <th>Join Secret</th>
+		<td>{{.JoinSecret}}</td>
+      </tr>
+	  {{ end }}
 	  {{ if ge .PlayerCount 0 }}
       <tr>
         <th>Player Count</th>
