@@ -28,6 +28,9 @@ var assets embed.FS
 //go:embed templates/game.tmpl
 var gameTemplate string
 
+//go:embed templates/index.html
+var indexHTML []byte
+
 func (s *Server) registerRoutes() {
 	limiter := tollbooth.NewLimiter(1, &limiter.ExpirableOptions{
 		DefaultExpirationTTL: time.Hour,
@@ -51,7 +54,7 @@ func (s *Server) registerRoutes() {
 	s.Router.Handle("/assets/*", http.StripPrefix("/assets/", http.FileServer(http.FS(sub))))
 
 	s.Router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "https://github.com/code-game-project/codegame-share/blob/main/README.md", http.StatusTemporaryRedirect)
+		w.Write(indexHTML)
 	})
 }
 

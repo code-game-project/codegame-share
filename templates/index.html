@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CodeGame Share</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="assets/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <h1>CodeGame Share</h1>
+    <div id="background-shade" onclick="closeDialog()"></div>
+    <div class="dialog" id="id-dialog">
+      <h2 class="dialog-title">Copy the link</h2>
+      <a id="link-box">https://share.code-game.org/asdfasdf</a>
+      <br>
+      <a class="btn" onclick="copyLink()">Copy</a>
+    </div>
+    <div class="dialog" id="error-dialog">
+      <h2 class="dialog-title" id="error-text">Error</h2>
+      <p id="error-msg">Something went wrong!</p>
+      <a class="btn" onclick="closeDialog()">Ok</a>
+    </div>
+    <div class="panels">
+      <div class="panel">
+        <h2>Share a game</h2>
+        <form>
+          <label for="game_game_url">URL</label>
+          <input required id="game_game_url" type="text" name="game_game_url" placeholder="games.code-game.org/example-game">
+          <label for="game_game_id">Game ID</label>
+          <input required id="game_game_id" type="text" name="game_game_id" placeholder="0000000000000-0000-0000-000000000000">
+          <a class="btn share" onclick="shareGame()">Share</a>
+        </form>
+      </div>
+      <div class="panel">
+        <h2>Share a spectate link</h2>
+        <form>
+          <label for="spectate_game_url">URL</label>
+          <input required type="text" id="spectate_game_url" name="spectate_game_url" placeholder="games.code-game.org/example-game">
+          <label for="spectate_game_id">Game ID</label>
+          <input required type="text" id="spectate_game_id" name="spectate_game_id" placeholder="0000000000000-0000-0000-000000000000">
+          <label for="spectate_player_id">Player ID</label>
+          <input required type="text" id="spectate_player_id" name="spectate_player_id" placeholder="0000000000000-0000-0000-000000000000">
+          <label for="spectate_player_secret">Player Secret</label>
+          <input required type="text" id="spectate_player_secret" name="spectate_player_secret" placeholder="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
+          <a class="btn share" onclick="shareSpectate()">Share</a>
+        </form>
+      </div>
+    </div>
+    <script>
+    async function shareGame() {
+      const url = document.getElementById("game_game_url").value;
+      const id = document.getElementById("game_game_id").value;
+
+      if (!url || !id) {
+        showError("All fields are required!")
+        return
+      }
+
+      const res = await fetch("https://share.code-game.org/game", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          game_url: url,
+          game_id: id
+        })
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        showError(data.error)
+        return
+      }
+
+
+      showDialog(data.id)
+    }
+
+    async function shareSpectate() {
+      const url = document.getElementById("spectate_game_url").value;
+      const id = document.getElementById("spectate_game_id").value;
+      const playerId = document.getElementById("spectate_player_id").value;
+      const playerSecret = document.getElementById("spectate_player_secret").value;
+
+      if (!url || !id || !playerId || !playerSecret) {
+        showError("All fields are required!")
+        return
+      }
+
+      const res = await fetch("https://share.code-game.org/spectate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          game_url: url,
+          game_id: id,
+          player_id: playerId,
+          player_secret: playerSecret
+        })
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        showError(data.error)
+        return
+      }
+
+
+      showDialog(data.id)
+    }
+
+    function showDialog(id) {
+      document.getElementById("background-shade").setAttribute("style", "display: block");
+      document.getElementById("id-dialog").setAttribute("style", "display: block");
+      document.getElementById("link-box").setAttribute("href", "https://share.code-game.org/" + id);
+      document.getElementById("link-box").innerHTML = "https://share.code-game.org/" + id;
+    }
+
+    function showError(msg) {
+      document.getElementById("background-shade").setAttribute("style", "display: block");
+      document.getElementById("error-dialog").setAttribute("style", "display: block");
+      document.getElementById("error-msg").innerHTML = msg;
+    }
+
+    function closeDialog() {
+      document.getElementById("background-shade").setAttribute("style", "display: none");
+      document.getElementById("id-dialog").setAttribute("style", "display: none");
+      document.getElementById("error-dialog").setAttribute("style", "display: none");
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(document.getElementById("link-box").innerHTML);
+      closeDialog();
+    }
+    </script>
+  </body>
+</html>

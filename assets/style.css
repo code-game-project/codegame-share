@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Regular.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
 
 html {
   background-color: #26282f;
@@ -26,6 +31,130 @@ p {
   font-size: 18px;
   margin-left: 20vw;
   margin-right: 20vw;
+}
+
+.panels {
+  margin-top: 8vh;
+  display: flex;
+  justify-content: center;
+  gap: 12%;
+}
+
+.panel {
+  height: 70vh;
+  width: 30%;
+  background-color: #33353E;
+  border-radius: 10px;
+  position: relative;
+}
+
+.panel > h2 {
+  font-size: 36px;
+}
+
+.panel > form {
+  display: block;
+  text-align: left;
+  margin-left: 6%;
+  margin-right: 6%;
+  box-sizing: border-box;
+}
+
+.panel > form > label {
+  display: block;
+  margin-bottom: 0.3vh;
+}
+
+.panel > form > input {
+  display: block;
+  width: 100%;
+  margin-bottom: 2vh;
+  background-color: #3F414D;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  padding: 10px;
+  color: white;
+  box-sizing: border-box;
+}
+
+#background-shade {
+  background-color: #00000096;
+  position: absolute;
+  z-index: 99;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: none;
+}
+
+.dialog {
+  position: absolute;
+  width: 40%;
+  z-index: 100;
+  background-color: #33353E;
+  left: 30%;
+  right: 30%;
+  top: 28vh;
+  border-radius: 20px;
+  display: none;
+}
+
+#error-dialog {
+  display: none;
+}
+
+#error-msg {
+  color: red;
+  width: 80%;
+  margin-top: 4vh;
+  margin-bottom: 6vh;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+#link-box {
+  display: inline-block;
+  margin-top: 3vh;
+  margin-bottom: 7vh;
+  background-color: #3F414D;
+  padding: 10px 20px;
+  border-radius: 3px;
+}
+
+.dialog > h2 {
+  margin-top: 4vh;
+  font-size: 36px;
+}
+
+.dialog > .btn {
+  margin-bottom: 4vh;
+}
+
+.btn {
+  user-select: none;
+  color: white;
+  text-decoration: none;
+  padding: 12px 40px;
+  display: inline-block;
+  border-radius: 10px;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  background-color: #494984;
+  text-align: center;
+}
+
+.btn:hover {
+  filter: brightness(1.1);
+}
+
+.share {
+  padding: 12px 0px;
+  position: absolute;
+  bottom: 3vh;
+  left: 35%;
+  right: 35%;
 }
 
 #spectate-btn {
@@ -73,6 +202,15 @@ tr {
 
 tr:nth-of-type(even) {
     background-color: #33353f;
+}
+
+@media screen and (max-width: 1330px) {
+  .panels {
+    gap: 5%;
+  }
+  .panel {
+    width: 45%;
+  }
 }
 
 @media screen and (max-width: 1270px) {
