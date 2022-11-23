@@ -55,7 +55,8 @@ which when presented to the `/{id}` endpoint will return the session again.
 		"game_id": "", // ID of the game
 		"player_id": "", // ID of the player
 		"player_secret": "" // the player secret
-	}
+	},
+	"password": "" // optional password
 }
 ```
 
@@ -64,6 +65,8 @@ which when presented to the `/{id}` endpoint will return the session again.
 Retrieves the data associated with the ID and returns it in a different format depending on the endpoint used to store it.
 
 You can use the optional type parameter to assert that the entry is of a specific type.
+
+If the entry is password protected, you will need to set the `Password` header with the correct password.
 
 IDs and their associated content are stored for 24h.
 

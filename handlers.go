@@ -20,6 +20,7 @@ import (
 	"github.com/didip/tollbooth_chi"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //go:embed assets
@@ -82,7 +83,7 @@ func (s *Server) handleGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := s.storeEntry(TypeGame, body)
+	id, err := s.storeEntry(TypeGame, "", body)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "An unexpected error occurred.")
 		return
@@ -113,7 +114,7 @@ func (s *Server) handleSpectate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := s.storeEntry(TypeSpectate, body)
+	id, err := s.storeEntry(TypeSpectate, "", body)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "An unexpected error occurred.")
 		return
@@ -134,7 +135,11 @@ type sessionObj struct {
 }
 
 func (s *Server) handleSession(w http.ResponseWriter, r *http.Request) {
-	var body sessionObj
+	type request struct {
+		sessionObj
+		Password string `json:"password"`
+	}
+	var body request
 	err := decodeRequestBody(r, &body)
 	if err != nil {
 		respondDecodeError(w, err)
@@ -147,7 +152,7 @@ func (s *Server) handleSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := s.storeEntry(TypeSession, body)
+	id, err := s.storeEntry(TypeSession, body.Password, body.sessionObj)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "An unexpected error occurred.")
 		return
@@ -167,6 +172,13 @@ func (s *Server) handleGet(w http.ResponseWriter, r *http.Request) {
 			respondError(w, http.StatusInternalServerError, "An unexpected error occured.")
 		}
 		return
+	}
+
+	if obj.PasswordHash != nil {
+		if err = bcrypt.CompareHashAndPassword(obj.PasswordHash, []byte(r.Header.Get("Password"))); err != nil {
+			respondError(w, http.StatusForbidden, "Wrong password.")
+			return
+		}
 	}
 
 	if entryTypeQuery := r.URL.Query().Get("type"); entryTypeQuery != "" {
