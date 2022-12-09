@@ -376,7 +376,7 @@ func isValidGameURL(url string) bool {
 	return true
 }
 
-var localIpRegex = regexp.MustCompile(`(192\.168\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?)|(10\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?)`)
+var localIpRegex = regexp.MustCompile(`^(192\.168\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?)|(10\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?\.[0-9][0-9]?[0-9]?)$`)
 
 func isLocalIP(url string) bool {
 	if strings.HasPrefix(url, "192.168.") || strings.HasPrefix(url, "10.") {
