@@ -4,55 +4,63 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
 	<title>{{.DisplayName}}</title>
+    <link rel="stylesheet" href="assets/reset.css">
     <link rel="stylesheet" href="assets/style.css">
   </head>
   <body>
-	<h1>{{.DisplayName}}</h1>
-	<p>{{.Description}}</p>
+	<header>
+	  <h1>{{.DisplayName}}</h1>
+	</header>
+	<main>
+	  <p>{{.Description}}</p>
 
-    <div>
-	  <a id="spectate-btn" href="{{.BaseURL}}/spectate?game_id={{.GameID}}">Spectate</a>
-    </div>
+      <div>
+	    <a class="btn" id="spectate-btn" href="{{.BaseURL}}/spectate?game_id={{.GameID}}">Spectate</a>
+      </div>
 
-    <table>
-      <tr>
-		<th>Game URL</td>
-		<td><a href="{{.BaseURL}}">{{.URL}}</a></td>
-      </tr>
-      <tr>
-        <th>Game ID</th>
-		<td>{{.GameID}}</td>
-      </tr>
-	  {{ if .JoinSecret }}
-      <tr>
-        <th>Join Secret</th>
-		<td>{{.JoinSecret}}</td>
-      </tr>
-	  {{ end }}
-	  {{ if ge .PlayerCount 0 }}
-      <tr>
-        <th>Player Count</th>
-		<td>{{.PlayerCount}}</td>
-      </tr>
-	  {{ end }}
-	  {{ if .Version }}
-      <tr>
-        <th>Game Version</td>
-		<td>{{.Version}}</td>
-      </tr>
-      {{ end }}
-	  {{ if .RepositoryURL }}
-      <tr>
-        <th>Game Repository</td>
-		<td><a href="{{.RepositoryURL}}">{{.RepositoryURL}}</a></td>
-      </tr>
-      {{ end }}
-	  {{ if .CGVersion }}
-      <tr>
-        <th>CodeGame Version</td>
-		<td>{{.CGVersion}}</td>
-      </tr>
-	 {{ end }}
-    </table>
+      <table>
+        <tr>
+	  	<th>Game URL</td>
+	  	<td><a href="{{.BaseURL}}">{{.URL}}</a></td>
+        </tr>
+        <tr>
+          <th>Game ID</th>
+	  	<td>{{.GameID}}</td>
+        </tr>
+	    {{ if .JoinSecret }}
+        <tr>
+          <th>Join Secret</th>
+	  	<td>{{.JoinSecret}}</td>
+        </tr>
+	    {{ end }}
+	    {{ if ge .PlayerCount 0 }}
+        <tr>
+          <th>Player Count</th>
+	  	<td>{{.PlayerCount}}</td>
+        </tr>
+	    {{ end }}
+	    {{ if .Version }}
+        <tr>
+          <th>Game Version</td>
+	  	<td>{{.Version}}</td>
+        </tr>
+        {{ end }}
+	    {{ if .RepositoryURL }}
+        <tr>
+          <th>Game Repository</td>
+	  	<td><a href="{{.RepositoryURL}}">{{.RepositoryURL}}</a></td>
+        </tr>
+        {{ end }}
+	    {{ if .CGVersion }}
+        <tr>
+          <th>CodeGame Version</td>
+	  	<td>{{.CGVersion}}</td>
+        </tr>
+	   {{ end }}
+      </table>
+	</main>
+    <footer>
+      <p>Powered by <a href="https://code-game.org/">CodeGame</a></p>
+    </footer>
   </body>
 </html>

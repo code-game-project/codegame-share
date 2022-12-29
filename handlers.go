@@ -33,7 +33,7 @@ var gameTemplate string
 var indexHTML []byte
 
 func (s *Server) registerRoutes() {
-	limiter := tollbooth.NewLimiter(1, &limiter.ExpirableOptions{
+	limiter := tollbooth.NewLimiter(5, &limiter.ExpirableOptions{
 		DefaultExpirationTTL: time.Hour,
 	}).SetIPLookups([]string{"X-Forwarded-For", "X-Real-IP", "RemoteAddr"}).SetMethods([]string{"GET", "POST"})
 	s.Router.Use(tollbooth_chi.LimitHandler(limiter))

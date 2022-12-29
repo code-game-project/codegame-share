@@ -4,48 +4,60 @@
     <title>CodeGame Share</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="assets/reset.css" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet">
   </head>
   <body>
-    <h1>CodeGame Share</h1>
     <div id="background-shade" onclick="closeDialog()"></div>
-    <div class="dialog" id="id-dialog">
-      <h2 class="dialog-title">Copy the link</h2>
-      <a id="link-box">https://share.code-game.org/asdfasdf</a>
-      <br>
-      <a class="btn" onclick="copyLink()">Copy</a>
-    </div>
-    <div class="dialog" id="error-dialog">
-      <h2 class="dialog-title" id="error-text">Error</h2>
-      <p id="error-msg">Something went wrong!</p>
-      <a class="btn" onclick="closeDialog()">Ok</a>
-    </div>
-    <div class="panels">
-      <div class="panel">
-        <h2>Share a game</h2>
-        <form>
-          <label for="game_game_url">URL</label>
-          <input required id="game_game_url" type="text" name="game_game_url" placeholder="games.code-game.org/example-game">
-          <label for="game_game_id">Game ID</label>
-          <input required id="game_game_id" type="text" name="game_game_id" placeholder="0000000000000-0000-0000-000000000000">
-          <a class="btn share" onclick="shareGame()">Share</a>
-        </form>
+    <header>
+      <h1>CodeGame Share</h1>
+    </header>
+    <main>
+      <div class="dialog" id="id-dialog">
+        <h2 class="dialog-title">Copy the link</h2>
+        <a id="link-box"></a>
+        <br>
+        <a class="btn dialog-btn" onclick="copyLink()">Copy</a>
       </div>
-      <div class="panel">
-        <h2>Share a spectate link</h2>
-        <form>
-          <label for="spectate_game_url">URL</label>
-          <input required type="text" id="spectate_game_url" name="spectate_game_url" placeholder="games.code-game.org/example-game">
-          <label for="spectate_game_id">Game ID</label>
-          <input required type="text" id="spectate_game_id" name="spectate_game_id" placeholder="0000000000000-0000-0000-000000000000">
-          <label for="spectate_player_id">Player ID</label>
-          <input required type="text" id="spectate_player_id" name="spectate_player_id" placeholder="0000000000000-0000-0000-000000000000">
-          <label for="spectate_player_secret">Player Secret</label>
-          <input required type="text" id="spectate_player_secret" name="spectate_player_secret" placeholder="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
-          <a class="btn share" onclick="shareSpectate()">Share</a>
-        </form>
+      <div class="dialog" id="error-dialog">
+        <h2 class="dialog-title" id="error-text">Error</h2>
+        <p id="error-msg">Something went wrong!</p>
+        <a class="btn dialog-btn" onclick="closeDialog()">Ok</a>
       </div>
-    </div>
+      <div class="panels">
+        <div class="panel">
+          <h2>Share a game</h2>
+          <form>
+            <div class="inputs">
+              <label for="game_game_url">URL</label>
+              <input required id="game_game_url" type="text" name="game_game_url" placeholder="games.code-game.org/example-game">
+              <label for="game_game_id">Game ID</label>
+              <input required id="game_game_id" type="text" name="game_game_id" placeholder="0000000000000-0000-0000-000000000000">
+            </div>
+            <a class="btn share" onclick="shareGame()">Share</a>
+          </form>
+        </div>
+        <div class="panel">
+          <h2>Share a spectate link</h2>
+          <form>
+            <div class="inputs">
+              <label for="spectate_game_url">URL</label>
+              <input required type="text" id="spectate_game_url" name="spectate_game_url" placeholder="games.code-game.org/example-game">
+              <label for="spectate_game_id">Game ID</label>
+              <input required type="text" id="spectate_game_id" name="spectate_game_id" placeholder="0000000000000-0000-0000-000000000000">
+              <label for="spectate_player_id">Player ID</label>
+              <input required type="text" id="spectate_player_id" name="spectate_player_id" placeholder="0000000000000-0000-0000-000000000000">
+              <label for="spectate_player_secret">Player Secret</label>
+              <input required type="text" id="spectate_player_secret" name="spectate_player_secret" placeholder="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa">
+            </div>
+            <a class="btn share" onclick="shareSpectate()">Share</a>
+          </form>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <p>Powered by <a href="https://code-game.org/">CodeGame</a></p>
+    </footer>
     <script>
     async function shareGame() {
       const url = document.getElementById("game_game_url").value;
@@ -56,7 +68,7 @@
         return
       }
 
-      const res = await fetch("https://share.code-game.org/game", {
+      const res = await fetch(window.location.origin + "/game", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -89,7 +101,7 @@
         return
       }
 
-      const res = await fetch("https://share.code-game.org/spectate", {
+      const res = await fetch(window.location.origin + "/spectate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -116,8 +128,8 @@
     function showDialog(id) {
       document.getElementById("background-shade").setAttribute("style", "display: block");
       document.getElementById("id-dialog").setAttribute("style", "display: block");
-      document.getElementById("link-box").setAttribute("href", "https://share.code-game.org/" + id);
-      document.getElementById("link-box").innerHTML = "https://share.code-game.org/" + id;
+      document.getElementById("link-box").setAttribute("href", window.location.origin + "/" + id);
+      document.getElementById("link-box").innerHTML = window.location.origin + "/" + id;
     }
 
     function showError(msg) {

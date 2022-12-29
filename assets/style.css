@@ -1,3 +1,14 @@
+:root {
+  --background: hsl(227, 10%, 17%);
+  --background-light: hsl(227, 11%, 25%);
+  --background-lighter: #3F414D;
+  --primary: hsl(218, 65%, 45%);
+  --primary-light: hsl(218, 65%, 58%);
+  --text: hsl(0, 0%, 96%);
+  --radius: 6px;
+  --padding: 12px;
+}
+
 @font-face {
     font-family: 'Roboto';
     src: url('fonts/Roboto-Regular.ttf');
@@ -6,24 +17,58 @@
 }
 
 html {
-  background-color: #26282f;
-  color: white;
+  background-color: var(--background);
+  color: var(--text);
   font-family: 'Roboto', sans-serif;
+}
+
+header,
+main,
+footer {
+  max-width: 1000px;
+  margin: var(--padding) auto var(--padding);
+}
+
+@media screen and (max-width: 1000px) {
+  header,
+  main,
+  footer {
+    margin: var(--padding);
+  }
+}
+
+header > h1 {
+  text-align: center;
+  font-size: 50px;
+}
+
+footer > p {
+  text-align: center;
+  font-size: 16px;
 }
 
 body {
   text-align: center;
-  height: 100vh;
+}
+
+h1,
+h2,
+p,
+div,
+button {
+  font-family: 'Roboto';
+  color: var(--text);
 }
 
 a {
-  color: lightskyblue;
+  font-family: 'Roboto';
+  text-decoration: none;
+  color: var(--primary-light);
 }
 
 h1 {
-  font-size: 52px;
-  margin-top: 4vh;
-  margin-bottom: 0;
+  font-size: 50px;
+  margin: 0;
 }
 
 p {
@@ -37,15 +82,18 @@ p {
   margin-top: 8vh;
   display: flex;
   justify-content: center;
-  gap: 12%;
+  gap: 10%;
 }
 
 .panel {
-  height: 70vh;
-  width: 30%;
-  background-color: #33353E;
-  border-radius: 10px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--padding)*2) var(--padding);
+  border-radius: var(--radius);
+  background-color: var(--background-light);
+  flex-grow: 1;
+  gap: 1vh;
+  flex-basis: 100%;
 }
 
 .panel > h2 {
@@ -53,29 +101,43 @@ p {
 }
 
 .panel > form {
-  display: block;
+  flex-grow: 1;
+  gap: 4vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   text-align: left;
   margin-left: 6%;
   margin-right: 6%;
   box-sizing: border-box;
 }
 
-.panel > form > label {
+label {
   display: block;
   margin-bottom: 0.3vh;
 }
 
-.panel > form > input {
+.inputs {
+  flex-grow: 1;
+}
+
+input {
   display: block;
   width: 100%;
   margin-bottom: 2vh;
-  background-color: #3F414D;
+  background-color: var(--background-lighter);
   border: none;
   border-radius: 5px;
   font-size: 16px;
   padding: 10px;
-  color: white;
+  color: var(--text);
   box-sizing: border-box;
+  outline-style: none;
+  border: 1px solid var(--background-lighter);
+}
+
+input:focus {
+  border: 1px solid var(--primary);
 }
 
 #background-shade {
@@ -91,14 +153,23 @@ p {
 
 .dialog {
   position: absolute;
-  width: 40%;
+  width: 80%;
+  max-width: 550px;
   z-index: 100;
-  background-color: #33353E;
-  left: 30%;
-  right: 30%;
+  background-color: var(--background-light);
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
   top: 28vh;
-  border-radius: 20px;
+  border-radius: var(--radius);
   display: none;
+}
+
+.dialog-btn {
+  display: inline-block;
+  width: 30%;
+  max-width: 120px;
 }
 
 #error-dialog {
@@ -118,9 +189,10 @@ p {
   display: inline-block;
   margin-top: 3vh;
   margin-bottom: 7vh;
-  background-color: #3F414D;
-  padding: 10px 20px;
-  border-radius: 3px;
+  background-color: var(--background);
+  padding: var(--padding);
+  border-radius: var(--radius);
+  width: 70%;
 }
 
 .dialog > h2 {
@@ -134,38 +206,31 @@ p {
 
 .btn {
   user-select: none;
-  color: white;
+  color: var(--text);
   text-decoration: none;
-  padding: 12px 40px;
+  padding: var(--padding);
+  border: none;
   display: inline-block;
-  border-radius: 10px;
-  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius);
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  background-color: #494984;
+  background-color: var(--primary);
   text-align: center;
 }
 
 .btn:hover {
-  filter: brightness(1.1);
+  filter: brightness(0.95);
 }
 
 .share {
   padding: 12px 0px;
-  position: absolute;
-  bottom: 3vh;
-  left: 35%;
-  right: 35%;
+  width: 40%;
+  align-self: center;
 }
 
 #spectate-btn {
   display: inline-block;
   margin-top: 3vh;
-  color: white;
-  text-decoration: none;
-  padding: 15px 30px;
-  background-color: #2a6588;
-  border-radius: 10px;
-  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 #spectate-btn:hover {
@@ -183,7 +248,7 @@ table {
 }
 
 th {
-  background-color: #494984;
+  background-color: var(--primary);
   font-size: 15px;
   padding: 25px 1vw;
   width: 10vw;
@@ -197,11 +262,11 @@ td {
 }
 
 tr {
-  background-color: #2f313a;
+  background-color: var(--background-light);
 }
 
 tr:nth-of-type(even) {
-    background-color: #33353f;
+    background-color: var(--background-lighter);
 }
 
 @media screen and (max-width: 1330px) {
@@ -255,5 +320,55 @@ tr:nth-of-type(even) {
   p {
     margin-left: 1vw;
     margin-right: 1vw;
+  }
+
+  .panels {
+    flex-direction: column;
+    align-items: center;
+    gap: 5vh;
+    margin-top: 4vh;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  header > h1 {
+    font-size: 40px;
+  }
+
+  .panel > h2 {
+    font-size: 30px;
+  }
+
+  .dialog > h2 {
+    font-size: 34px;
+  }
+
+  #link-box {
+    width: 80%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .dialog {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  :root {
+    --padding: 8px;
+  }
+  .panel > form {
+    margin-left: 3%;
+    margin-right: 3%;
+  }
+  .dialog {
+    width: 95%;
+  }
+  #link-box {
+    width: 90%;
   }
 }
